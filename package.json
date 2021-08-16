@@ -1,7 +1,7 @@
 {
   "name": "asyncapi-kafka-template",
   "version": "0.0.1",
-  "description": "Template for generator templates to make it much easier to start writing your own generator template",
+  "description": "Generate deployment scripts for a kafka cluster.",
   "scripts": {
     "test": "echo 'No tests available in this project.'",
     "release": "echo 'Not available yet. Will call yarn semantic-release'",
@@ -27,9 +27,9 @@
     "access": "public"
   },
   "bugs": {
-    "url": "https://github.com/ekozynin/template-for-generator-templates/issues"
+    "url": "https://github.com/ekozynin/asyncapi-kafka-template/issues"
   },
-  "homepage": "https://github.com/ekozynin/template-for-generator-templates#readme",
+  "homepage": "https://github.com/ekozynin/asyncapi-kafka-template#readme",
   "dependencies": {
     "@asyncapi/generator-filters": "^2.0.0",
     "@asyncapi/generator-hooks": "^0.1.0",
