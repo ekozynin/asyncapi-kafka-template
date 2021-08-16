@@ -1,0 +1,40 @@
+{
+  "projectName": "asyncapi-kafka-template",
+  "projectOwner": "ekozynin",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "commitConvention": "none",
+  "contributors": [
+    {
+      "login": "ekozynin",
+      "name": "Eugen Kozynin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4666186?v=4",
+      "profile": "https://github.com/ekozynin",
+      "contributions": [
+        "code",
+        "doc",
+        "design",
+        "ideas",
+        "maintenance"
+      ]
+    },
+    {
+      "login": "Bazza95",
+      "name": "Jake Bayer",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14013264?v=4",
+      "profile": "https://github.com/Bazza95",
+      "contributions": [
+        "code",
+        "review",
+        "ideas"
+      ]
+    }
+  ],
+  "contributorsPerLine": 3,
+  "skipCi": true
+}
