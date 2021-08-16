@@ -2,11 +2,11 @@
 
 ![Confluent Kafka logo](./docos/confluent-kafka.png) 
 
-#Confluent Kafka AsyncAPI template
+# Confluent Kafka AsyncAPI template
 
 <!-- toc -->
 
-- [Minimum for your template](#minimum-for-your-template)
+- [Summary](#summary)
 - [Technical Requirements](#technical-requirements)
   * [Prerequisites](#prerequisites)
   * [To run this template](#to-run-this-template)
