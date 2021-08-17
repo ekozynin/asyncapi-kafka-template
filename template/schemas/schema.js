@@ -1,9 +1,6 @@
 import { File } from '@asyncapi/generator-react-sdk';
 
-// https://docs.confluent.io/platform/current/schema-registry/develop/using.html
-
 export default function({ asyncapi }) {
-  const schemaRegistry = 'http://localhost:8081'; // TODO
   const messages = asyncapi.allMessages();
 
   const topicsFiles = [];
@@ -13,7 +10,7 @@ export default function({ asyncapi }) {
 
     topicsFiles.push(
       <File name={fileName}>
-        {createMessageCommand(key, value, schemaRegistry)}
+        {createMessageCommand(key, value)}
       </File>
     );
   });
@@ -21,7 +18,7 @@ export default function({ asyncapi }) {
   return topicsFiles;
 }
 
-function createMessageCommand(messageName, message, schemaRegistry) {
+function createMessageCommand(messageName, message) {
   const messagePayload = message.originalPayload();
   const messageNamespace = messagePayload.namespace;
   const schemaType = 'AVRO'; // TODO
@@ -52,10 +49,7 @@ def register_schema(schema_registry_client, schema_name, schema_type, schema_pay
 ### ----- END register_topic_schema()
 
 ### ----- main()
-def main():
-    logging.debug('Creating SchemaRegistryClient with schemaRegistryUrl ${schemaRegistry}')
-    schema_registry_client = SchemaRegistryClient({'url': '${schemaRegistry}'})
-
+def main(schema_registry_client):
     logging.info("-------------------------------------")
     logging.info('Registering schema ${messageNamespace}.${messageName}')
     register_schema(schema_registry_client, '${messageNamespace}.${messageName}', '${schemaType}', '${JSON.stringify(messagePayload)}')

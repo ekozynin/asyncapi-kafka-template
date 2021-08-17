@@ -25,8 +25,8 @@ function createIndexFile(messages) {
 ${ fileNames.map(fileName => `from .${fileName} import main as ${fileName}_main`).join('\n') }
 
 ### ----- main()
-def main():
-    ${ fileNames.map(fileName => `${fileName}_main()`).join('; ') }
+def main(schema_registry_client):
+    ${ fileNames.map(fileName => `${fileName}_main(schema_registry_client)`).join('; ') }
 ### ----- END main()
 
   `;

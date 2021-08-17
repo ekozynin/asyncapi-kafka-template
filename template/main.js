@@ -29,7 +29,7 @@ logging.debug("Creating SchemaRegistryClient with schemaRegistryUrl ${schemaRegi
 schema_registry_client = SchemaRegistryClient({"url": "${schemaRegistry}"})
 
 topics.main(admin_client, schema_registry_client)
-schemas.main()
+schemas.main(schema_registry_client)
 
 `;
 }
