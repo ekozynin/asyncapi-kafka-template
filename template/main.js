@@ -20,7 +20,7 @@ from confluent_kafka.schema_registry import SchemaRegistryClient
 from topics import topics
 from schemas import schemas
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 logging.debug("Creating AdminClient with bootstrap.servers ${bootstrapServers}")
 admin_client = AdminClient({"bootstrap.servers": "${bootstrapServers}"})

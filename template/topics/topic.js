@@ -64,7 +64,7 @@ def create_new_topic(admin_client, channel_name, partitions, replicationFactor, 
         # TODO alter number of partitions if needed
         # https://docs.confluent.io/platform/current/clients/confluent-kafka-python/html/index.html#confluent_kafka.admin.AdminClient.create_partitions
 
-        # TODO update topic replication factor
+        # TODO update topic replication factor if needed
 
         # Merge values from existing config and new config
         for config_entry in topic_config.values():
