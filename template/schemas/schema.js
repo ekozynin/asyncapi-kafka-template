@@ -21,7 +21,16 @@ export default function({ asyncapi }) {
 function createMessageCommand(messageName, message) {
   const messagePayload = message.originalPayload();
   const messageNamespace = messagePayload.namespace;
-  const schemaType = 'AVRO'; // TODO
+  const messageType = message.originalSchemaFormat();
+
+  let schemaType = null;
+  if (messageType.startsWith('application/vnd.apache.avro')) {
+    schemaType = 'AVRO';
+  } else if (messageType.startsWith('application/x-protobuf')) {
+    schemaType = 'PROTOBUF';
+  } else if (messageType.startsWith('application/schema')) {
+    schemaType = 'JSON';
+  }
 
   return `import logging
 
