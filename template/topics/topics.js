@@ -26,8 +26,8 @@ function createIndexFile(channels) {
 ${ fileNames.map(fileName => `from .${fileName} import main as ${fileName}_main`).join('\n') }
 
 ### ----- main()
-def main():
-    ${ fileNames.map(fileName => `${fileName}_main()`).join('; ') }
+def main(admin_client, schema_registry_client):
+    ${ fileNames.map(fileName => `${fileName}_main(admin_client, schema_registry_client)`).join('; ') }
 ### ----- END main()
 
   `;

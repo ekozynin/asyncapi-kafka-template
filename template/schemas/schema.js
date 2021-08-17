@@ -22,8 +22,6 @@ export default function({ asyncapi }) {
 }
 
 function createMessageCommand(messageName, message, schemaRegistry) {
-  console.log(`------------------->${  JSON.stringify(message)}`);
-
   const messagePayload = message.originalPayload();
   const messageNamespace = messagePayload.namespace;
 
@@ -56,6 +54,7 @@ def main():
     logging.debug('Creating SchemaRegistryClient with schemaRegistryUrl ${schemaRegistry}')
     schema_registry_client = SchemaRegistryClient({'url': '${schemaRegistry}'})
 
+    logging.info("-------------------------------------")
     logging.info('Registering schema ${messageNamespace}.${messageName}')
     register_schema(schema_registry_client, '${messageNamespace}.${messageName}', 'AVRO', '${JSON.stringify(messagePayload)}')
 ### ----- END main()
