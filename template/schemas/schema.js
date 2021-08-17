@@ -24,7 +24,7 @@ export default function({ asyncapi }) {
 function createMessageCommand(messageName, message, schemaRegistry) {
   const messagePayload = message.originalPayload();
   const messageNamespace = messagePayload.namespace;
-  const schemaType = 'AVRO' // TODO
+  const schemaType = 'AVRO'; // TODO
 
   return `import logging
 
