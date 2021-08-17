@@ -4,7 +4,7 @@
   "description": "Generate deployment scripts for a kafka cluster.",
   "scripts": {
     "test": "echo 'No tests available in this project.'",
-    "release": "echo 'Not available yet. Will call yarn semantic-release'",
+    "release": "yarn generate:assets ; yarn lint ; yarn test ; echo 'Not available yet. Will call yarn semantic-release'",
     "lint": "eslint --max-warnings 0 --fix --config .eslintrc .",
     "generate:readme:toc": "markdown-toc -i README.md",
     "generate:readme:contributors": "all-contributors generate",
