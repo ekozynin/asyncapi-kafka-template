@@ -24,11 +24,12 @@ function createTopicCommand(channelName, channel) {
   const topicConfigs = channel.bindings().kafka.configs;
   const valueSchema = channel.bindings().kafka.valueSchema;
 
-  return `import logging
+  return `import logging, sys
 
 from confluent_kafka.admin import AdminClient, NewTopic, ConfigResource
 from confluent_kafka.schema_registry import SchemaRegistryClient, Schema
 from confluent_kafka import KafkaException, KafkaError
+from confluent_kafka.schema_registry.error import SchemaRegistryError
 
 ### ----- create_new_topic()
 def create_new_topic(admin_client, channel_name, partitions, replicationFactor, topic_configs):
@@ -43,7 +44,7 @@ def create_new_topic(admin_client, channel_name, partitions, replicationFactor, 
         if e.args[0].code() == KafkaError.UNKNOWN_TOPIC_OR_PART:
             logging.debug("Topic {} doesn't exists".format(channel_name))
         else:
-            raise e
+            sys.exit(2)
 
     if topic_config is None:
         logging.debug('Creating new topic {}'.format(channel_name))
@@ -57,7 +58,7 @@ def create_new_topic(admin_client, channel_name, partitions, replicationFactor, 
             if (e.args[0].code() == KafkaError.TOPIC_ALREADY_EXISTS):
                 logging.debug("Topic {} already exists".format(channel_name))
             else:
-                raise e
+                sys.exit(2)
     else:
         logging.info("Altering topic {} config".format(channel_name))
 
@@ -87,7 +88,7 @@ def register_topic_schema(schema_registry_client, channel_name, schema_type, sch
         logging.info('Value schema for topic {} has been registered with the version {}'.format(channel_name, schemaVersion))
     except SchemaRegistryError as e:
         logging.error("Failed to register value schema for topic {}: {}".format(channel_name, e))
-        raise e
+        sys.exit(2)
 
     logging.debug('Setting schema compatibility level to {} for topic {}'.format(compatibility_level, channel_name))
     try:
@@ -95,7 +96,7 @@ def register_topic_schema(schema_registry_client, channel_name, schema_type, sch
         logging.info('Topic {} schema compatibility level is {}'.format(channel_name, resultCompatibilityLevel['compatibility']))
     except SchemaRegistryError as e:
         logging.error("Failed to set value schema compatibility for topic {} to {} level: {}".format(channel_name, compatibility_level, e))
-        raise e
+        sys.exit(2)
 ### ----- END register_topic_schema()
 
 ### ----- main()

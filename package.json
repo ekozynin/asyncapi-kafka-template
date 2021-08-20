@@ -62,8 +62,8 @@
       "kafka"
     ],
     "parameters": {
-      "customParameter": {
-        "description": "Just an example of a parameter"
+      "environment": {
+        "description": "The environment to deploy to. Should be one of the servers in your asyncapi file."
       }
     },
     "nonRenderableFiles": [

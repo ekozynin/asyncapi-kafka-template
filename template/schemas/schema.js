@@ -32,7 +32,7 @@ function createMessageCommand(messageName, message) {
     schemaType = 'JSON';
   }
 
-  return `import logging
+  return `import logging, sys
 
 from confluent_kafka.admin import AdminClient, NewTopic
 from confluent_kafka.schema_registry import SchemaRegistryClient, Schema
@@ -46,7 +46,7 @@ def register_schema(schema_registry_client, schema_name, schema_type, schema_pay
         logging.info('Value schema for topic {} has been registered with the version {}'.format(schema_name, schemaVersion))
     except SchemaRegistryError as e:
         logging.error("Failed to register value schema for topic {}: {}".format(schema_name, e))
-        raise e
+        sys.exit(2)
 
     logging.debug('Setting schema compatibility level to {} for topic {}'.format(compatibility_level, schema_name))
     try:
@@ -54,7 +54,7 @@ def register_schema(schema_registry_client, schema_name, schema_type, schema_pay
         logging.info('Topic {} schema compatibility level is {}'.format(schema_name, resultCompatibilityLevel['compatibility']))
     except SchemaRegistryError as e:
         logging.error("Failed to set schema compatibility for schema {} to {} level: {}".format(schema_name, compatibility_level, e))
-        raise e
+        sys.exit(2)
 ### ----- END register_topic_schema()
 
 ### ----- main()
