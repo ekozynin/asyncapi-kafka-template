@@ -1,0 +1,18 @@
+{
+  "namespace": "another",
+  "name": "AnotherMessage",
+  "type": "record",
+
+  "fields": [
+    {
+      "name": "field1",
+      "type": "string",
+      "default": null
+    },
+    {
+      "name": "field2",
+      "type": "string",
+      "default": null
+    }
+  ]
+}

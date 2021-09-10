@@ -12,20 +12,20 @@ export default function({ asyncapi, params }) {
 }
 
 function createEnvironmentConfigurationMap(servers) {
-  var environmentMap = new Map();
+  const environmentMap = new Map();
 
-  const myMap = Object
-        .entries(servers)
-        .map(([environmentName, environmentInfo]) => {
-            const bootstrapServers = environmentInfo.url();
-            const schemaRegistry = environmentInfo.json('x-schema-registry-url');
+  Object
+    .entries(servers)
+    .map(([environmentName, environmentInfo]) => {
+      const bootstrapServers = environmentInfo.url();
+      const schemaRegistry = environmentInfo.json('x-schema-registry-url');
 
-          var jsonData = {};
-          jsonData['bootstrapServers'] = bootstrapServers;
-          jsonData['schemaRegistry'] = schemaRegistry;
+      const jsonData = {};
+      jsonData['bootstrapServers'] = bootstrapServers;
+      jsonData['schemaRegistry'] = schemaRegistry;
 
-          environmentMap.set(environmentName, jsonData);
-        });
+      environmentMap.set(environmentName, jsonData);
+    });
 
   return environmentMap;
 }
@@ -34,6 +34,8 @@ function createIndexFile(environmentConfigurationMap) {
   return `import logging, sys
 import getopt
 import json
+
+from common.register_schema import register_schemas
 
 from confluent_kafka.admin import AdminClient
 from confluent_kafka.schema_registry import SchemaRegistryClient
@@ -85,8 +87,12 @@ def main(argv):
     logging.debug("Creating SchemaRegistryClient with schemaRegistryUrl {}".format(schema_registry_url))
     schema_registry_client = SchemaRegistryClient({"url": schema_registry_url})
 
-    topics.main(admin_client, schema_registry_client)
     schemas.main(schema_registry_client)
+    topics.main(admin_client, schema_registry_client)
+
+    logging.info("-------------------------------------")
+    logging.info("Rergistering shcemas with the schema repository")
+    register_schemas(schema_registry_client)
 ### ----- END main()
 
 if __name__ == "__main__":

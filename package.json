@@ -1,15 +1,16 @@
 {
   "name": "asyncapi-kafka-template",
   "version": "0.0.1",
-  "description": "Generate deployment scripts for a kafka cluster.",
+  "description": "Generates scripts to deploy kafka topology in a kafka cluster.",
+
   "scripts": {
     "test": "echo 'No tests available in this project.'",
-    "release": "yarn generate:assets ; yarn lint ; yarn test ; echo 'Not available yet. Will call yarn semantic-release'",
+    "release": "yarn generate:assets ; yarn lint ; yarn test ; semantic-release",
     "lint": "eslint --max-warnings 0 --fix --config .eslintrc .",
     "generate:readme:toc": "markdown-toc -i README.md",
     "generate:readme:contributors": "all-contributors generate",
     "generate:assets": "yarn generate:readme:toc ; yarn generate:readme:contributors",
-    "bump:version": "echo 'We do not trigger releases for this template. Normally this script should invoke \"npm --no-git-tag-version --allow-same-version version $VERSION\"'"
+    "bump:version": "npm --no-git-tag-version --allow-same-version version $VERSION"
   },
   "repository": {
     "type": "git",
@@ -30,11 +31,45 @@
     "url": "https://github.com/ekozynin/asyncapi-kafka-template/issues"
   },
   "homepage": "https://github.com/ekozynin/asyncapi-kafka-template#readme",
+
   "dependencies": {
     "@asyncapi/generator-filters": "^2.0.0",
     "@asyncapi/generator-hooks": "^0.1.0",
     "@asyncapi/generator-react-sdk": "^0.2.11"
   },
+  "devDependencies": {
+    "@asyncapi/generator": "^1.8.0",
+    "@asyncapi/parser": "^1.6.0",
+
+    "eslint": "^7.7.0",
+    "eslint-plugin-jest": "^23.20.0",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-security": "^1.4.0",
+    "eslint-plugin-sonarjs": "^0.5.0",
+
+    "jest": "^26.4.2",
+    "jest-esm-transformer": "^1.0.0",
+
+    "all-contributors-cli": "^6.19.0",
+    "markdown-toc": "^1.2.0",
+
+    "semantic-release": "^17.4.4",
+    "@semantic-release/commit-analyzer": "^8.0.1",
+    "@semantic-release/github": "^7.0.4",
+    "@semantic-release/npm": "^7.0.3",
+    "@semantic-release/release-notes-generator": "^9.0.1",
+    "conventional-changelog-conventionalcommits": "^4.2.3"
+  },
+  "jest": {
+    "transform": {
+      "\\.m?jsx?$": "jest-esm-transformer"
+    },
+    "collectCoverageFrom": [
+      "{filters,hooks}/**/*.js",
+      "!hooks/generateExtraFormats.js"
+    ]
+  },
+
   "release": {
     "branches": [
       "master"
@@ -56,6 +91,7 @@
       "@semantic-release/github"
     ]
   },
+
   "generator": {
     "renderer": "react",
     "supportedProtocols": [
@@ -71,31 +107,5 @@
       "sample.gif"
     ],
     "generator": ">=1.8.0"
-  },
-  "devDependencies": {
-    "@asyncapi/generator": "^1.8.0",
-    "@asyncapi/parser": "^1.6.0",
-
-    "eslint": "^7.7.0",
-    "eslint-plugin-jest": "^23.20.0",
-    "eslint-plugin-react": "^7.21.5",
-    "eslint-plugin-security": "^1.4.0",
-    "eslint-plugin-sonarjs": "^0.5.0",
-
-    "jest": "^26.4.2",
-    "jest-esm-transformer": "^1.0.0",
-
-    "all-contributors-cli": "^6.19.0",
-    "markdown-toc": "^1.2.0",
-    "semantic-release": "^17.4.4"
-  },
-  "jest": {
-    "transform": {
-      "\\.m?jsx?$": "jest-esm-transformer"
-    },
-    "collectCoverageFrom": [
-      "{filters,hooks}/**/*.js",
-      "!hooks/generateExtraFormats.js"
-    ]
   }
 }

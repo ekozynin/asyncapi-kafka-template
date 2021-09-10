@@ -1,47 +1,72 @@
-<img src="https://github.com/asyncapi/parser-nodejs/raw/master/assets/logo.png" alt="AsyncAPI logo" width="200" />
-
 ![Confluent Kafka logo](./docos/confluent-kafka.png) 
 
-# Confluent Kafka AsyncAPI template
+# Confluent Kafka generator
+
+This template will generate python scripts to create kafka topology in an existing Kafka cluster based on your AsyncApi.
+
+The following Confluent Kafka components can be defined using AsyncApi specification:
+- topics
+- schema definitions
+- [TODO] connectors
+- [TODO] KSql
+
+
+__Table of Contents__
 
 <!-- toc -->
 
-- [Summary](#summary)
-- [Technical Requirements](#technical-requirements)
+- [Usage](#usage)
   * [Prerequisites](#prerequisites)
-  * [To run this template](#to-run-this-template)
+    + [asyncapi generator](#asyncapi-generator)
+    + [python](#python)
+  * [From the command-line interface (CLI)](#from-the-command-line-interface-cli)
+  * [Run it](#run-it)
+- [AsyncApi Extensions](#asyncapi-extensions)
 - [Contributors](#contributors)
 
 <!-- tocstop -->
 
-## Summary
-
-TODO 
-
-
-## Technical Requirements
+## Usage
 
 ### Prerequisites
 
-TODO npm & python
-
-### To run this template
-
-Install asyncapi generator
+#### asyncapi generator
 `npm install -g @asyncapi/generator`
 
-Call generator to execute this template on your AsyncAPI file
-```
-ag path_to_asyncapi.yaml @ekozynin/asyncapi-kafka-template \
-    --output output/scripts --force-write 
+#### python
+The generated scripts were tested with python 3.9.7
+
+The following python dependencies are required:
+
+`pip install confluent_kafka`
+
+`pip install requests`
+
+`pip install graphlib`
+
+
+### From the command-line interface (CLI)
+
+```bash
+  Usage: ag [options] <asyncapi> @ekozynin/asyncapi-kafka-template
+
+  Options:
+    --force-write               force writing of the generated files to given directory (defaults to false)
+    -o, --output <outputDir>    directory where to put the generated files (defaults to current directory)
 ```
 
-Run generated python scripts to deploy your kafka topology to the kafka cluster
-```
-cd output/scripts
+### Run it
 
-python main.py
+Go to the root folder of the generated code and run this command (you need python):
+```bash
+  Usage: python main.py -e <environment>
+
+  Options:
+    environment   one of the "servers" definitions in your asyncapi file
 ```
+
+## AsyncApi Extensions
+[Additional extensions to the AsyncApi specification that this generator understands.](./EXTENSIONS.md)
 
 ## Contributors
 

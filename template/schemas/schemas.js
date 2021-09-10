@@ -6,7 +6,7 @@ export default function({ asyncapi }) {
   return [
     <File name='schemas.py'>
       {createIndexFile(messages)}
-    </File>
+    </File>,
   ];
 }
 

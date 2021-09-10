@@ -10,7 +10,7 @@ export default function({ asyncapi }) {
 
     topicsFiles.push(
       <File name={fileName}>
-        {createMessageCommand(key, value)}
+        {createSchema(key, value)}
       </File>
     );
   });
@@ -18,50 +18,25 @@ export default function({ asyncapi }) {
   return topicsFiles;
 }
 
-function createMessageCommand(messageName, message) {
+function createSchema(messageName, message) {
   const messagePayload = message.originalPayload();
   const messageNamespace = messagePayload.namespace;
-  const messageType = message.originalSchemaFormat();
+  const schemaFormat = message.originalSchemaFormat();
+  const schemaReferences = message.extensions()['x-schemaReferences'] ?? [];
 
-  let schemaType = null;
-  if (messageType.startsWith('application/vnd.apache.avro')) {
-    schemaType = 'AVRO';
-  } else if (messageType.startsWith('application/x-protobuf')) {
-    schemaType = 'PROTOBUF';
-  } else if (messageType.startsWith('application/schema')) {
-    schemaType = 'JSON';
-  }
+  // https://docs.confluent.io/platform/current/schema-registry/avro.html#schema-evolution-and-compatibility
+  // we only want to define message compatibility for topic's value schemas
+  const messageCompatibility = 'NONE';
 
   return `import logging, sys
 
-from confluent_kafka.admin import AdminClient, NewTopic
-from confluent_kafka.schema_registry import SchemaRegistryClient, Schema
-
-### ----- register_topic_schema()
-def register_schema(schema_registry_client, schema_name, schema_type, schema_payload, compatibility_level = 'FULL'):
-    schema = Schema(schema_payload, schema_type=schema_type)
-
-    try:
-        schemaVersion = schema_registry_client.register_schema(schema_name, schema)
-        logging.info('Value schema for topic {} has been registered with the version {}'.format(schema_name, schemaVersion))
-    except SchemaRegistryError as e:
-        logging.error("Failed to register value schema for topic {}: {}".format(schema_name, e))
-        sys.exit(2)
-
-    logging.debug('Setting schema compatibility level to {} for topic {}'.format(compatibility_level, schema_name))
-    try:
-        resultCompatibilityLevel = schema_registry_client.set_compatibility(schema_name, compatibility_level)
-        logging.info('Topic {} schema compatibility level is {}'.format(schema_name, resultCompatibilityLevel['compatibility']))
-    except SchemaRegistryError as e:
-        logging.error("Failed to set schema compatibility for schema {} to {} level: {}".format(schema_name, compatibility_level, e))
-        sys.exit(2)
-### ----- END register_topic_schema()
+from common.register_schema import add_schema
 
 ### ----- main()
 def main(schema_registry_client):
     logging.info("-------------------------------------")
-    logging.info('Registering schema ${messageNamespace}.${messageName}')
-    register_schema(schema_registry_client, '${messageNamespace}.${messageName}', '${schemaType}', '${JSON.stringify(messagePayload)}')
+    logging.info('Adding schema ${messageNamespace}.${messageName}')
+    add_schema('${messageNamespace}.${messageName}', '${schemaFormat}', '${JSON.stringify(messagePayload)}', '${messageCompatibility}', ${JSON.stringify(schemaReferences)})
 ### ----- END main()
 
   `;

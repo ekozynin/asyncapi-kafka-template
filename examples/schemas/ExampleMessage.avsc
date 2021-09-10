@@ -1,0 +1,19 @@
+{
+  "namespace": "example",
+  "name": "ExampleMessage",
+  "type": "record",
+
+  "fields": [
+    {
+      "name": "field1",
+      "type": "string"
+    },
+    {
+      "name": "attributes",
+      "type": {
+        "type": "array",
+        "items": "another.AnotherMessage"
+      }
+    }
+  ]
+}
