@@ -6,7 +6,7 @@ info:
     An example of Kafka topology using AsyncApi
 
 servers:
-  $ref: '../servers.yaml'
+  $ref: './servers.yaml'
 
 channels:
   example-channel:
