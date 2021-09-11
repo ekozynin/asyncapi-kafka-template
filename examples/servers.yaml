@@ -1,0 +1,27 @@
+local-broker:
+  url: localhost:9092
+  protocol: kafka
+  protocolVersion: 2.6.0
+  description: local kafka cluster for development
+
+local-schemaRegistry:
+  url: http://localhost:8081
+  protocol: kafka
+  protocolVersion: 2.6.0
+  description: local kafka cluster for development
+
+dev-broker:
+  url: pkc-4n66v.australiaeast.azure.confluent.cloud:9092
+  protocol: kafka-secure
+  protocolVersion: 2.6.0
+  description: confluent cloud kafka cluster for development
+  security:
+    - confluentBroker: [ ]
+
+dev-schemaRegistry:
+  url: https://psrc-e8vk0.southeastasia.azure.confluent.cloud
+  protocol: kafka-secure
+  protocolVersion: 2.6.0
+  description: confluent cloud kafka cluster for development
+  security:
+    - confluentSchemaRegistry: [ ]
