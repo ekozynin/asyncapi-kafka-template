@@ -1,6 +1,6 @@
 {
-  "name": "asyncapi-kafka-template",
-  "version": "0.0.3",
+  "name": "@ekozynin/asyncapi-kafka-template",
+  "version": "0.0.4",
   "description": "Generates scripts to deploy kafka topology in a kafka cluster.",
 
   "scripts": {
