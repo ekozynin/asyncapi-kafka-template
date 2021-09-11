@@ -1,37 +1,42 @@
 import { File } from '@asyncapi/generator-react-sdk';
 
 export default function({ asyncapi, params }) {
-  const servers = asyncapi.servers();
-  const environmentConfigurationMap = createEnvironmentConfigurationMap(servers);
+  const serversConfigurationMap = createServersConfigurationMap(asyncapi);
 
   return ([
     <File name="main.py">
-      { createIndexFile(environmentConfigurationMap) }
+      { createIndexFile(serversConfigurationMap) }
     </File>
   ]);
 }
 
-function createEnvironmentConfigurationMap(servers) {
-  const environmentMap = new Map();
+function createServersConfigurationMap(asyncapi) {
+  const servers = asyncapi.servers();
+
+  const serversMap = new Map();
 
   Object
     .entries(servers)
-    .map(([environmentName, environmentInfo]) => {
-      const bootstrapServers = environmentInfo.url();
-      const schemaRegistry = environmentInfo.json('x-schema-registry-url');
+    .map(([serverName, serverInfo]) => {
+      const serverUrl = serverInfo.url();
 
-      const jsonData = {};
-      jsonData['bootstrapServers'] = bootstrapServers;
-      jsonData['schemaRegistry'] = schemaRegistry;
+      const serverConfig = {};
+      serverConfig['url'] = serverUrl;
 
-      environmentMap.set(environmentName, jsonData);
+      if (serverInfo.security()) {
+        const securitySchemaName = Object.keys(serverInfo.security()[0]['_json'])[0];
+
+        serverConfig['security'] = asyncapi.components().securityScheme(securitySchemaName).extensions()['x-configs'];
+      }
+
+      serversMap.set(serverName, serverConfig);
     });
 
-  return environmentMap;
+  return serversMap;
 }
 
-function createIndexFile(environmentConfigurationMap) {
-  return `import logging, sys
+function createIndexFile(serversConfigurationMap) {
+  return `import logging, sys, os
 import getopt
 import json
 
@@ -63,29 +68,48 @@ def get_environment_name(argv):
 
 ### ----- main()
 def main(argv):
-    environment_configuration_map = json.loads('${JSON.stringify(Object.fromEntries(environmentConfigurationMap))}')
-
     environment_name = get_environment_name(argv)
-    environment_configuration = environment_configuration_map.get(environment_name)
 
-    if environment_configuration == None:
+    server_configuration_map = json.loads('${JSON.stringify(Object.fromEntries(serversConfigurationMap))}')
+
+    broker_configuration = server_configuration_map.get("{}-broker".format(environment_name))
+    schema_registry_configuration = server_configuration_map.get("{}-schemaRegistry".format(environment_name))
+
+# TODO
+    if broker_configuration == None:
         logging.error("Can't find environment configuration for '{}' environment".format(environment_name))
         sys.exit(2)
 
-    bootstrap_servers = environment_configuration.get('bootstrapServers')
-    schema_registry_url = environment_configuration.get('schemaRegistry')
+    admin_client_config = {"bootstrap.servers": broker_configuration.get('url')}
+    if 'security' in broker_configuration:
+        cluster_api_key = os.getenv('CLUSTER_API_KEY')
+        cluster_api_secret = os.getenv('CLUSTER_API_SECRET')
+
+        admin_client_config.update(broker_configuration['security'])
+
+        admin_client_config['sasl.username'] = cluster_api_key
+        admin_client_config['sasl.password'] = cluster_api_secret
+
+    schema_registry_client_config = {"url": schema_registry_configuration.get('url')}
+    if 'security' in schema_registry_configuration:
+        schema_registry_api_key = os.getenv('SCHEMA_REGISTRY_API_KEY')
+        schema_registry_api_secret = os.getenv('SCHEMA_REGISTRY_API_SECRET')
+
+        schema_registry_client_config.update(schema_registry_configuration['security'])
+
+        schema_registry_client_config['basic.auth.user.info'] = '{}:{}'.format(schema_registry_api_key, schema_registry_api_secret)
 
     logging.info("#########################################################")
     logging.info("Starting configuration for '{}' environment".format(environment_name))
-    logging.info("bootstrap.servers = {}".format(bootstrap_servers))
-    logging.info("schema_registry_url = {}".format(schema_registry_url))
     logging.info("#########################################################")
 
-    logging.debug("Creating AdminClient with bootstrap.servers {}".format(bootstrap_servers))
-    admin_client = AdminClient({"bootstrap.servers": bootstrap_servers})
+    logging.debug("Creating AdminClient with bootstrap.servers")
+    # https://docs.confluent.io/platform/current/clients/confluent-kafka-python/html/index.html#confluent_kafka.admin.AdminClient
+    admin_client = AdminClient(admin_client_config)
 
-    logging.debug("Creating SchemaRegistryClient with schemaRegistryUrl {}".format(schema_registry_url))
-    schema_registry_client = SchemaRegistryClient({"url": schema_registry_url})
+    logging.debug("Creating SchemaRegistryClient with schemaRegistryUrl")
+    # https://docs.confluent.io/platform/current/clients/confluent-kafka-python/html/index.html#schemaregistryclient
+    schema_registry_client = SchemaRegistryClient(schema_registry_client_config)
 
     schemas.main(schema_registry_client)
     topics.main(admin_client, schema_registry_client)

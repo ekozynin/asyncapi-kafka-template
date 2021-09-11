@@ -21,6 +21,10 @@ __Table of Contents__
     + [python](#python)
   * [From the command-line interface (CLI)](#from-the-command-line-interface-cli)
   * [Run it](#run-it)
+- [Special Considerations](#special-considerations)
+  * [Servers](#servers)
+  * [Security](#security)
+    + [Environment variables](#environment-variables)
 - [AsyncApi Extensions](#asyncapi-extensions)
 - [Contributors](#contributors)
 
@@ -36,14 +40,9 @@ __Table of Contents__
 #### python
 The generated scripts were tested with python 3.9.7
 
-The following python dependencies are required:
+Go to the root folder of the generated code and install required python dependencies:
 
-`pip install confluent_kafka`
-
-`pip install requests`
-
-`pip install graphlib`
-
+`pip install -r python-requirements.txt`
 
 ### From the command-line interface (CLI)
 
@@ -64,6 +63,46 @@ Go to the root folder of the generated code and run this command (you need pytho
   Options:
     environment   one of the "servers" definitions in your asyncapi file
 ```
+
+## Special Considerations
+
+### Servers
+Kafka cluster usually has different components to deploy Kafka topology to: brokers, schema registry, connectors, KSql.
+
+To name the servers follow this rules:
+- server name should start with the environment name (such as local, dev, prod)
+- followed by dash '-'
+- followed by component type. One of: 'broker', 'schemaRegistry'
+
+### Security
+
+To connect to Confluent Cloud Cluster, the servers above should have 'security' attribute defined. Security schemas must be defined exactly as below. [Refer to full example.](./examples)
+
+```yaml
+components:
+  securitySchemes:
+    confluentBroker:
+      type: userPassword
+      x-configs:
+        security.protocol: sasl_ssl
+        sasl.mechanisms: PLAIN
+        sasl.username: '{{ CLUSTER_API_KEY }}'
+        sasl.password: '{{ CLUSTER_API_SECRET }}'
+
+    confluentSchemaRegistry:
+      type: userPassword
+      x-configs:
+        basic.auth.user.info: '{{ SCHEMA_REGISTRY_API_KEY }}:{{ SCHEMA_REGISTRY_API_SECRET }}'
+```
+
+#### Environment variables
+Use environment variables to pass security details when deploying kafka topology.
+
+The names for environment variables are:
+- CLUSTER_API_KEY
+- CLUSTER_API_SECRET
+- SCHEMA_REGISTRY_API_KEY
+- SCHEMA_REGISTRY_API_SECRET
 
 ## AsyncApi Extensions
 [Additional extensions to the AsyncApi specification that this generator understands.](./EXTENSIONS.md)
