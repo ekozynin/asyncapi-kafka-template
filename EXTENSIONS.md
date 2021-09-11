@@ -9,18 +9,39 @@ info:
     An example of Kafka topology using AsyncApi
 
 servers:
-  local:
+  local-broker:
     url: localhost:9092
     protocol: kafka
     protocolVersion: 2.6.0
     description: local kafka cluster for development
-    x-schema-registry-url: http://localhost:8081
+
+  local-schemaRegistry:
+    url: http://localhost:8081
+    protocol: kafka
+    protocolVersion: 2.6.0
+    description: local kafka cluster for development
+
+  dev-broker:
+    url: pkc-4n66v.australiaeast.azure.confluent.cloud:9092
+    protocol: kafka-secure
+    protocolVersion: 2.6.0
+    description: confluent cloud kafka cluster for development
+    security:
+      - confluentBroker: []
+
+  dev-schemaRegistry:
+    url: https://psrc-e8vk0.southeastasia.azure.confluent.cloud
+    protocol: kafka-secure
+    protocolVersion: 2.6.0
+    description: confluent cloud kafka cluster for development
+    security:
+      - confluentSchemaRegistry: []
 
 channels:
   example-channel:
     x-messageCompatibility: 'FULL' # https://docs.confluent.io/platform/current/schema-registry/avro.html#schema-evolution-and-compatibility
     x-message:
-      $ref: '#/components/messages/OrganisationFact'
+      $ref: '#/components/messages/ExampleMessage'
     bindings:
       kafka:
         x-partitions: 9
@@ -45,6 +66,20 @@ components:
       schemaFormat: application/vnd.apache.avro+yaml;version=1.9.0
       payload:
         $ref: './schema/AnotherMessage.avsc'
+
+  securitySchemes:
+    confluentBroker:
+      type: userPassword
+      x-configs:
+        security.protocol: sasl_ssl
+        sasl.mechanisms: PLAIN
+        sasl.username: '{{ CLUSTER_API_KEY }}'
+        sasl.password: '{{ CLUSTER_API_SECRET }}'
+
+    confluentSchemaRegistry:
+      type: userPassword
+      x-configs:
+        basic.auth.user.info: '{{ SCHEMA_REGISTRY_API_KEY }}:{{ SCHEMA_REGISTRY_API_SECRET }}'
 
 ```
 

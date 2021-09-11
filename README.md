@@ -16,7 +16,7 @@ __Table of Contents__
 <!-- toc -->
 
 - [Usage](#usage)
-  * [Run it](#run-it)
+- [Run it](#run-it)
 - [Special Considerations](#special-considerations)
   * [Servers](#servers)
   * [Security](#security)
@@ -36,7 +36,7 @@ __Table of Contents__
     -o, --output <outputDir>    directory where to put the generated files (defaults to current directory)
 ```
 
-### Run it
+## Run it
 
 The generated scripts were tested with python 3.9.7
 
