@@ -98,4 +98,4 @@ Kafka binding accepts the following fields
 ## Schema References
 Schema registry allows referencing other schemas already defined in the registry as part of the schema definition. The references however have to be explicitly defined when registering your schema definition.
 
-To list other schema that the message should reference, list them using `x-schemaReferences` field.
+To list other schema that the message references, list them using `x-schemaReferences` field.
