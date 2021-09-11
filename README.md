@@ -16,10 +16,6 @@ __Table of Contents__
 <!-- toc -->
 
 - [Usage](#usage)
-  * [Prerequisites](#prerequisites)
-    + [asyncapi generator](#asyncapi-generator)
-    + [python](#python)
-  * [From the command-line interface (CLI)](#from-the-command-line-interface-cli)
   * [Run it](#run-it)
 - [Special Considerations](#special-considerations)
   * [Servers](#servers)
@@ -32,22 +28,8 @@ __Table of Contents__
 
 ## Usage
 
-### Prerequisites
-
-#### asyncapi generator
-`npm install -g @asyncapi/generator`
-
-#### python
-The generated scripts were tested with python 3.9.7
-
-Go to the root folder of the generated code and install required python dependencies:
-
-`pip install -r python-requirements.txt`
-
-### From the command-line interface (CLI)
-
 ```bash
-  Usage: ag [options] <asyncapi> @ekozynin/asyncapi-kafka-template
+  Usage: ag [options] <asyncapi.yaml> @ekozynin/asyncapi-kafka-template
 
   Options:
     --force-write               force writing of the generated files to given directory (defaults to false)
@@ -56,12 +38,20 @@ Go to the root folder of the generated code and install required python dependen
 
 ### Run it
 
+The generated scripts were tested with python 3.9.7
+
 Go to the root folder of the generated code and run this command (you need python):
 ```bash
   Usage: python main.py -e <environment>
 
   Options:
     environment   one of the "servers" definitions in your asyncapi file
+```
+
+First time you may need to install additional python dependencies. Go to the root folder of the generated code and install required python dependencies:
+
+```bash
+pip install -U -r python-requirements.txt
 ```
 
 ## Special Considerations
